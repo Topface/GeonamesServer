@@ -28,8 +28,8 @@ abstract class AbstractIndexCommand extends Command
             ->addArgument('mongo-host')
             ->addArgument('mongo-port')
 
-            ->addOption('mongo-user')
-            ->addOption('mongo-password');
+            ->addArgument('mongo-user')
+            ->addArgument('mongo-password');
     }
     
     protected function getGuzzle(InputInterface $input)

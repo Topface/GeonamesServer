@@ -6,6 +6,16 @@
             place.alternatenames = '';
         }
 
+        //fuck string with "Nan" code
+        Object.keys(place).forEach(function (key) {
+            if (typeof place[key] != "string" &&
+                typeof place[key] != "array" &&
+                typeof place[key] != "object" &&
+                isNaN(place[key])) {
+                place[key] = "";
+            }
+        });
+
         var names = [];
 
         if(typeof place.asciiname.toLowerCase === 'function') {

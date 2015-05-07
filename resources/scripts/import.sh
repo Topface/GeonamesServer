@@ -18,16 +18,6 @@ if [ -z `php -m | grep curl` ]; then
     exit 1
 fi
 
-if [ -z `which node` ]; then
-    echo "node not found. Please install it and run this script again."
-    exit 1
-fi
-
-if [ -z `which npm` ]; then
-    echo "npm not found. Please install it and run this script again."
-    exit 1
-fi
-
 if [ -z `which php` ]; then
     echo "php not found. Please install it and run this script again."
     exit 1
@@ -90,16 +80,12 @@ if [ -n "$mongo_pass" ]; then
     cmd_mongo_pass="--password $mongo_pass"
 fi
 
-echo mongo $cmd_mongo_host $cmd_mongo_port $cmd_mongo_user $cmd_mongo_pass --eval "printjson(db.adminCommand('listDatabases'))" > /dev/null
+echo mongo $cmd_mongo_host $cmd_mongo_port $cmd_mongo_user $cmd_mongo_pass $mongo_database --eval "printjson(show collections)" > /dev/null
 
 if [ $? -eq 1 ]; then
     echo "Cannot connect to mongo ..."
     exit 1;
 fi
-
-# Installing npm modules
-echo "Installing npm modules ..."
-/usr/bin/env npm install
 
 # Create directories
 if [ ! -d $DATA_DIR ];then
@@ -113,31 +99,22 @@ fi
 # Get geonames resources
 echo "Start fetching Geonames ressources ..."
 
-if [ ! -f "$SOURCE_DIR/GeoLiteCity.dat.gz" ];then
+geonames_db_filename="allCountries"
+
+if [ ! -f "$SOURCE_DIR/$geonames_db_filename.zip" ];then
     cd $SOURCE_DIR
-    echo "Downloading GeoliteCity.dat.gz"
-    wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
+    echo "Downloading $geonames_db_filename.zip"
+    wget http://download.geonames.org/export/dump/$geonames_db_filename.zip
 fi
 
-if [ ! -f "$DATA_DIR/GeoLiteCity.dat" ];then
-    echo "Extracting GeoliteCity.dat.gz"
-    gunzip -c "$SOURCE_DIR/GeoLiteCity.dat.gz" > "$DATA_DIR/GeoLiteCity.dat"
-fi
-
-if [ ! -f "$SOURCE_DIR/allCountries.zip" ];then
-    cd $SOURCE_DIR
-    echo "Downloading allCountries.zip"
-    wget http://download.geonames.org/export/dump/allCountries.zip
-fi
-
-if [ ! -f "$DATA_DIR/allCountries.txt" ];then
-    echo "Extracting allCountries.zip"
-    unzip "$SOURCE_DIR/allCountries.zip" -d "$DATA_DIR"
+if [ ! -f "$DATA_DIR/$geonames_db_filename.txt" ];then
+    echo "Extracting $geonames_db_filename.zip"
+    unzip "$SOURCE_DIR/$geonames_db_filename.zip" -d "$DATA_DIR"
 fi
 
 if [ ! -f "$DATA_DIR/allCities.txt" ];then
-    echo "Extracting cities from allCountries.txt to allCities.txt"
-    cat "$DATA_DIR/allCountries.txt" | grep -e PPL -e STLMT > "$DATA_DIR/allCities.txt"
+    echo "Extracting cities from $geonames_db_filename.txt to allCities.txt"
+    cat "$DATA_DIR/$geonames_db_filename.txt" | grep -e PPL -e STLMT > "$DATA_DIR/allCities.txt"
 fi
 
 if [ ! -f "$SOURCE_DIR/admin1CodesASCII.txt" ];then
@@ -161,11 +138,11 @@ if [ ! -f "$DATA_DIR/countrynames.txt" ];then
 fi
 
 # Droping mongo database
-echo "Droping '$mongo_database' database ..."
-mongo $cmd_mongo_host $cmd_mongo_port  $cmd_mongo_user $cmd_mongo_pass $mongo_database --eval "db.dropDatabase()" > /dev/null
+echo "Droping '$mongo_database' collections ..."
+mongo $cmd_mongo_host $cmd_mongo_port  $cmd_mongo_user $cmd_mongo_pass $mongo_database --eval "db.cities.drop(); db.admincodes.drop();  db.countrynames.drop();" > /dev/null
 
 if [ $? -eq 1 ]; then
-    echo "Cannot drop '$mongo_database' database..."
+    echo "Cannot drop '$mongo_database' collections..."
     exit 1;
 fi
 

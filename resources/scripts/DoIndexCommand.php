@@ -18,8 +18,8 @@ class DoIndexCommand extends AbstractIndexCommand
         $mongoCollectionName = $input->getArgument('mongo-collection');
         $mongoHost = $input->getArgument('mongo-host');
         $mongoPort = $input->getArgument('mongo-port');
-        $mongoUserName = $input->getOption('mongo-user');
-        $mongoPassword = $input->getOption('mongo-password');
+        $mongoUserName = $input->getArgument('mongo-user');
+        $mongoPassword = $input->getArgument('mongo-password');
         
         $options = array();
         if (!empty($mongoUserName)) {
@@ -29,7 +29,7 @@ class DoIndexCommand extends AbstractIndexCommand
             $options['password'] = $mongoPassword;
         }
         
-        $m = new MongoClient("mongodb://$mongoHost:$mongoPort", $options);
+        $m = new MongoClient("mongodb://$mongoHost:$mongoPort/$mongoDbName", $options);
         $db = $m->$mongoDbName;
         \MongoCursor::$timeout = -1;
 

@@ -4,12 +4,16 @@ test:
 
 install:
 	bash ./resources/scripts/install.sh
+	bash ./resources/scripts/server.sh
 
-init:
-	bash ./resources/scripts/init.sh
+import:
+	bash ./resources/scripts/import.sh
+
+server:
+	bash ./resources/scripts/server.sh
 
 index:
-	bash ./resources/scripts/indexing/index.sh
+	bash ./resources/scripts/index.sh
 
 clean:
 	rm -rf ./resources/data
