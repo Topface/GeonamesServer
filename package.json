@@ -15,6 +15,7 @@
         "ejs": "*",
         "stylus": "*",
         "string": "*",
-        "underscore": "*"
+        "underscore": "*",
+        "connect-health-check": "^0.2.0"
     }
 }

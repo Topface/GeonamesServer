@@ -4,6 +4,7 @@ var confParser = require('./lib/configParser');
 var middlewares = require('./lib/middleware');
 var common = require('./lib/common');
 var mongojs = require('mongojs');
+var healthCheck = require('connect-health-check');
 
 var app = module.exports = express();
 
@@ -52,6 +53,9 @@ app.get('mongodb').runCommand({ping:1}, function(err, res) {
 app.set('port', config.app.port);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
+
+// Health check
+app.use(healthCheck);
 
 // Check for request type, return 406 if content is not acceptable
 app.use(middlewares.setRequestType(app));
