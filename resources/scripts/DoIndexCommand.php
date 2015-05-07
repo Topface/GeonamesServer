@@ -62,7 +62,7 @@ class DoIndexCommand extends AbstractIndexCommand
                 foreach ($cursor as $obj) {
                     $i++;
                     unset($obj['_id']);
-            
+
                     $requests[] = $guzzle->put($input->getArgument('es-type').'/'.$i, null, json_encode($obj));
 
                     if (0 === $i % 180) {
@@ -75,6 +75,9 @@ class DoIndexCommand extends AbstractIndexCommand
                         $output->writeln(date('H:i:s') . "\tProgress: $i/$nbEntries\t($entriesPerSeconds/seconds)\t" . round($i / $nbEntries * 100) . "% \t"
                             . "~" . $this->secsToString(($nbEntries - $i) / $entriesPerSeconds) . " left\tMemory usage : ".(memory_get_usage()>>20)."Mo");
                     }
+                }
+                if ($requests) {
+                    $guzzle->send($requests);
                 }
                 $flag = 1;
             } catch (Exception $ex) {
