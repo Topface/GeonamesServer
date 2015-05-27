@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Setup the Config files
+cp ./config/elasticsearch.cfg.sample ./config/elasticsearch.cfg
+cp ./config/mongo.cfg.sample ./config/mongo.cfg
+cp ./config/server.json.sample ./config/server.json
+
+#elasticsearch configs
+if [ ! -z "$ELASTICSEARCH_HOST" ]; then
+    sed -i 's/elastic_host=.*/elastic_host="'$ELASTICSEARCH_HOST'"/' ./config/elasticsearch.cfg
+fi
+
+if [ ! -z "$ELASTICSEARCH_PORT" ]; then
+    sed -i 's/elastic_port=.*/elastic_port="'$ELASTICSEARCH_PORT'"/' ./config/elasticsearch.cfg
+fi
+
+if [ ! -z "$ELASTICSEARCH_INDEX" ]; then
+    sed -i 's/elastic_index=.*/elastic_index="'$ELASTICSEARCH_INDEX'"/' ./config/elasticsearch.cfg
+fi
+
+#mongodb configs
+if [ ! -z "$MONGO_HOST" ]; then
+    sed -i 's/mongo_host=.*/mongo_host="'$MONGO_HOST'"/' ./config/mongo.cfg
+fi
+
+if [ ! -z "$MONGO_PORT" ]; then
+    sed -i 's/mongo_port=.*/mongo_port="'$MONGO_PORT'"/' ./config/mongo.cfg
+fi
+
+if [ ! -z "$MONGO_USER" ]; then
+    sed -i 's/mongo_user=.*/mongo_user="'$MONGO_USER'"/' ./config/mongo.cfg
+fi
+
+if [ ! -z "$MONGO_PASSWORD" ]; then
+    sed -i 's/mongo_pass=.*/mongo_pass="'$MONGO_PASSWORD'"/' ./config/mongo.cfg
+fi
+
+if [ ! -z "$MONGO_DB" ]; then
+    sed -i 's/mongo_database=.*/mongo_database="'$MONGO_DB'"/' ./config/mongo.cfg
+fi
+
+#server configs
+if [ ! -z "$SERVER_PORT" ]; then
+    sed -i 's/"port":.*,/"port":'$SERVER_PORT',/' ./config/server.json
+fi

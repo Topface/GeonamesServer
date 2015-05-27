@@ -1,0 +1,21 @@
+FROM phusion/baseimage:0.9.16
+
+RUN sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10 && \
+    echo "deb http://repo.mongodb.org/apt/ubuntu "$(lsb_release -sc)"/mongodb-org/3.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-3.0.list
+
+# code
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends php5-cli php5-dev php5-curl php5-mongo make php-pear wget unzip git mongodb-org-shell mongodb-org-tools && \
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
+    apt-get clean
+
+# Set PHP Default timezone
+RUN sed -i -e "s/;date.timezone\s*=/date.timezone = UTC/g" /etc/php5/cli/php.ini
+
+# work dir
+RUN mkdir /geonames
+ADD . /geonames
+WORKDIR  /geonames
+
+ENTRYPOINT ["./entrypoint"]
+CMD ["make", "import"]

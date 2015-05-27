@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -e
+
+#init configs
+./resources/scripts/init_configs && \
+exec "$@"

@@ -7,11 +7,9 @@
         }
 
         //fuck string with "Nan" code
-        Object.keys(place).forEach(function (key) {
-            if (typeof place[key] != "string" &&
-                typeof place[key] != "array" &&
-                typeof place[key] != "object" &&
-                isNaN(place[key])) {
+        Object.keys(place).forEach(function(key) {
+            //is NaN, http://adripofjavascript.com/blog/drips/the-problem-with-testing-for-nan-in-javascript.html
+            if(place[key] !== place[key]) {
                 place[key] = "";
             }
         });
