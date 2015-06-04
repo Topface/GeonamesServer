@@ -1,0 +1,6 @@
+.git
+composer.lock
+node_modules
+vendor
+resources/data
+resources/sources

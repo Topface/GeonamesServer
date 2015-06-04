@@ -1,0 +1,16 @@
+FROM phusion/baseimage:0.9.16
+
+# code
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends nodejs nodejs-legacy npm make wget make unzip build-essential g++ && \
+    apt-get clean
+
+# work dir
+RUN mkdir /geonames
+ADD . /geonames
+WORKDIR  /geonames
+
+RUN make server
+
+ENTRYPOINT ["./entrypoint"]
+CMD ["nodejs", "server.js"]

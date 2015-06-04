@@ -99,7 +99,12 @@ fi
 # Get geonames resources
 echo "Start fetching Geonames ressources ..."
 
-geonames_db_filename="allCountries"
+if [ ! -z "$GEONAMES_DB_FILE" ]; then
+    geonames_db_filename=$GEONAMES_DB_FILE
+else
+    #small db file for developers
+    geonames_db_filename="cities15000"
+fi
 
 if [ ! -f "$SOURCE_DIR/$geonames_db_filename.zip" ];then
     cd $SOURCE_DIR
